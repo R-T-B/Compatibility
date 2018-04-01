@@ -1,0 +1,13 @@
+#ifndef PRINCIPIA_OPTIONAL
+#define PRINCIPIA_OPTIONAL
+
+#include <experimental/optional>
+
+// Inserting symbols in std is horribly UB.
+namespace std {
+
+using std::experimental::optional;
+
+}  // namespace std
+
+#endif  // PRINCIPIA_OPTIONAL

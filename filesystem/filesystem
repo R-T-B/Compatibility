@@ -1,0 +1,34 @@
+#ifndef PRINCIPIA_FILESYSTEM
+#define PRINCIPIA_FILESYSTEM
+
+#include <experimental/filesystem>
+
+// Inserting symbols in std is horribly UB.
+namespace std {
+
+namespace experimental {
+namespace filesystem {
+inline namespace v1 {
+
+// For some reason the gods of libc++ didn't bother to define this function.
+inline path& path::replace_extension(const path& replacement) {
+  *this += '.';
+  *this += replacement;
+  return *this;
+}
+
+}  // namespace v1
+}  // namespace filesystem
+}  // namespace experimental
+
+namespace filesystem {
+
+using std::experimental::filesystem::create_directories;
+using std::experimental::filesystem::exists;
+using std::experimental::filesystem::path;
+
+}  // namespace filesystem
+
+}  // namespace std
+
+#endif  // PRINCIPIA_FILESYSTEM
