@@ -1,15 +1,12 @@
 #ifndef PRINCIPIA_OPTIONAL
 #define PRINCIPIA_OPTIONAL
 
-#include <experimental/optional>
+#define _LIBCPP_PUSH_MACROS
+#define _LIBCPP_POP_MACROS
+#define _LIBCPP_INLINE_VAR inline
+template<typename T, typename...>
+using __enable_hash_helper = T;
 
-// Inserting symbols in std is horribly UB.
-namespace std {
-
-using std::experimental::make_optional;
-using std::experimental::nullopt;
-using std::experimental::optional;
-
-}  // namespace std
+#include <principia_optional_impl>
 
 #endif  // PRINCIPIA_OPTIONAL
