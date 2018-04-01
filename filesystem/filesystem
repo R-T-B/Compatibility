@@ -3,8 +3,68 @@
 
 #include <experimental/filesystem>
 
+#if defined(__APPLE__)
+#include <iomanip>
+#include <string>
+#endif
+
 // Inserting symbols in std is horribly UB.
 namespace std {
+
+#if defined(__APPLE__)
+
+// Apple has an oldish libc++.  This implementation was copied from
+// https://github.com/Norgg/eggsperimental_filesystem.
+namespace filesystem {
+
+class path {
+ public:
+  path() = default;
+  path(std::string const &source) : native_(source){};
+  path(char const *source) : native_(source){};
+  path(path const &) = default;
+  ~path() = default;
+
+  path &operator/=(path const &source) {
+    native_ += '/';
+    // nah, we're not stripping redundant slashes or anything.
+    native_ += source;
+    return *this;
+  }
+
+  path &operator+=(path const &source) {
+    native_ += source;
+    return *this;
+  }
+
+  std::string const &native() const { return native_; }
+
+  operator std::string() const { return native_; }
+
+  // Doesn't actually replace anything.
+  path &replace_extension(path const &replacement) {
+    native_ += '.';
+    native_ += replacement;
+    return *this;
+  }
+
+private:
+  std::string native_;
+};
+
+inline path operator/(path const &left, path const &right) {
+  return path(left) /= right;
+}
+
+template <typename Character, typename Traits>
+std::basic_ostream<Character, Traits> &
+operator<<(std::basic_ostream<Character, Traits> &os, const path &p) {
+  return os << std::quoted((string)p);
+}
+
+}  // namespace filesystem
+
+#else
 
 namespace experimental {
 namespace filesystem {
@@ -28,6 +88,8 @@ using std::experimental::filesystem::exists;
 using std::experimental::filesystem::path;
 
 }  // namespace filesystem
+
+#endif
 
 }  // namespace std
 
