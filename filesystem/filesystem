@@ -41,6 +41,8 @@ class path {
 
   operator std::string() const { return native_; }
 
+  std::string string() const { return native_; }
+
   // Doesn't actually replace anything.
   path &replace_extension(path const &replacement) {
     native_ += '.';
