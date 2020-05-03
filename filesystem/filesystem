@@ -50,6 +50,22 @@ class path {
     return *this;
   }
 
+  path stem() const {
+    auto const pos1 = native_.find_last_of('/');
+    auto const pos2 = native_.find_last_of('.');
+    return path(native_.substr(pos1 + 1, pos2 - pos1 - 1));
+  }
+
+  path extension() const {
+    auto const pos = native_.find_last_of('.');
+    return path(native_.substr(pos + 1));
+  }
+
+  path parent_path() const {
+    auto const pos = native_.find_last_of('/');
+    return path(native_.substr(0, pos));
+  }
+
 private:
   std::string native_;
 };
